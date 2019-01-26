@@ -1,0 +1,37 @@
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+
+	<!-- In the <http> element, we declare which URL pattern will be intercepted 
+		 by Spring security filter, using the <intercept-url> element. As per this 
+		 configuration, all the URL patterns /admin** are secured, and only the users 
+		 having role ROLE_ADMIN can be authorized to access these URLs. -->
+
+	<!-- Note that the <csrf disabled="true" /> element tells the Spring security 
+		 filter to intercept the /logout link as HTTP GET request. -->
+
+	<http auto-config="true">
+		<intercept-url pattern="/admin**"
+			access="hasRole('ROLE_ADMIN')" />
+		<csrf disabled="true" />
+		<logout/>
+	</http>
+
+	<!-- The <authentication-manager> element declares a user with username, 
+		 password and role (ROLE_ADMIN per this configuration). This user can be authenticated 
+		 to access the application. -->
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="admin" password="admin123" authorities="ROLE_ADMIN" />
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+
+</beans:beans>

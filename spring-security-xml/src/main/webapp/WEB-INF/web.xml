@@ -1,0 +1,54 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<web-app>
+	<display-name>Spring-Security</display-name>
+
+	<!-- Dispatcher Servlet -->
+	<servlet>
+		<servlet-name>SpringController</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- The init-param in the DispatcherServlet is used by the DispatcherServlet 
+			 init method to create an ApplicationContext for your web layer beans. -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring-mvc.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SpringController</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<!-- Bootstrap listener to start up and shut down Spring's root WebApplicationContext.ContextLoaderListener 
+		 creates a root web-application-context for the web-application and puts it 
+		 in the ServletContext. This context can be used to load and unload the spring-managed 
+		 beans irrespective of what technology is being used in the controller layer(Struts 
+		 or Spring MVC). -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- The context-param is used by the ContextLoaderListener to create an 
+		 ApplicationContext for you middle tier beans in a web application. -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			/WEB-INF/spring-security.xml
+		</param-value>
+	</context-param>
+
+	<!-- Spring Security Filter : The responsibility of the Spring Security 
+		 Filter is to intercept some URL patterns in order to apply authentication 
+		 and authorization as configured in the Spring security configuration file. -->
+	
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+</web-app>
