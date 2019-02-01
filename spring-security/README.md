@@ -89,7 +89,7 @@ When we’ve used the attribute IS_AUTHENTICATED_ANONYMOUSLY to grant anonymous 
 
 Obviously, you can also implement a custom AccessDecisionVoter and you can put just about any access-control logic you want in it. It might be specific to our application (business-logic related) or it might implement some security administration logic. 
 
-In Short, here is the summary
+## Summary
 
 Spring passes all Secure Object patterns to be intercepted as metadata to AbstractSecurityInterceptor.AbstractSecurityInterceptor takes help of AccessDecisionManager for making final access control decisions.Spring provides three built-in access decision managers
 
@@ -100,4 +100,53 @@ Spring passes all Secure Object patterns to be intercepted as metadata to Abstra
 AccessDecisionManager is actually composed with one or multiple access decision voters. This voter encapsulates the logic to allow/deny/abstain the user from viewing the resource. Voting the decision as abstain is more or less similar to not voting at all.So the voting results are represented by the ACCESS_GRANTED, ACCESS_DENIED, and ACCESS_ABSTAIN constant fields defined in the AccessDecisionVoter interface. 
 
 By default, an AffirmativeBased access decision manager is used with 2 voters: RoleVoter and AuthenticatedVoter. RoleVoter grants access if the user has some role as the resource required. But note that the role must start with “ROLE_” prefix if the voter has to grant access. But this can be customized for some other prefix as well. AuthenticatedVoter grants access only if user is authenticated. The authentication levels accepted are IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED, and IS_AUTHENTICATED_ANONYMOUSLY. 
+
+Below is an example of authorization through ‹intercept-url› in ‹http›
+
+
+    <sec:http access-decision-manager-ref="accessDecisionManager">
+      <sec:intercept-url pattern="/app/messageList*" access="ROLE_USER,ROLE_ANONYMOUS"/>
+      <sec:intercept-url pattern="/app/messagePost*" access="ROLE_USER"/>
+      <sec:intercept-url pattern="/app/messageDelete*" access="ROLE_ADMIN"/>
+      <sec:intercept-url pattern="/app/*" access="ROLE_USER"/>
+
+      <form-login login-page="/login.jsp" default-target-url="/app/messagePost"
+        authentication-failure-url="/login.jsp?error=true"/>
+      <!-- Other settings -->
+    </sec:http>
+    
+Spring will pass all these urls to be intercepted as metadata to FilterSecurityInterceptor. So here is how the same can be configured without using ‹intercept-url›:
+    
+    <sec:custom-filter position="FILTER_SECURITY_INTERCEPTOR" ref="filterSecurityInterceptor" />
+    <bean id="filterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+      <property name="authenticationManager" ref="authenticationManager"/>
+      <property name="accessDecisionManager" ref="accessDecisionManager"/>
+      <property name="securityMetadataSource">
+      <sec:filter-security-metadata-source lowercase-comparisons="true" request-matcher="ant" use-expressions="true">
+        <sec:intercept-url pattern="/app/messageList*" access="ROLE_USER,ROLE_ANONYMOUS"/>
+        <sec:intercept-url pattern="/app/messagePost*" access="ROLE_USER"/>
+        <sec:intercept-url pattern="/app/messageDelete*" access="ROLE_ADMIN"/>
+        <sec:intercept-url pattern="/app/*" access="ROLE_USER"/>
+      </sec:filter-security-metadata-source>
+      </property>
+    </bean>
+    
+Suppose we want to define a custom voter and add it to the access decision manager,
+
+    <sec:http access-decision-manager-ref="accessDecisionManager" auto-config="true">
+      <!-- filters declaration go here-->
+    </sec:http>
+
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+      <property name="decisionVoters">
+        <list>
+          <bean class="org.springframework.security.access.vote.RoleVoter">
+        <!-- Customize the prefix-->
+        <property name="rolePrefix" value="ROLE_"/>
+          </bean>
+          <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+          <bean class="<--custom voter with complete package-->"/>
+        </list>
+      </property>
+    </bean>
 
