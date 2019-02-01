@@ -24,8 +24,6 @@ Maven Without Spring Boot
         </dependencies>
     </dependencyManagement>
 
-BOM can be defined as above then the dependencies
-
     <dependencies>
     <!-- ... other dependency elements ... -->
         <dependency>
@@ -38,35 +36,8 @@ BOM can be defined as above then the dependencies
         </dependency>
     </dependencies>
     
-## Common Modules
+Note : Instead of BOM, dependencies can be defined separately with version.The benefit of BOM is that it saves us from any issues related to version conflict/mismatch. 
 
-### Core - spring-security-core.jar
-Contains core authentication and access-contol classes and interfaces, remoting support and basic provisioning APIs. Required by any application which uses Spring Security. Supports standalone applications, remote clients, method (service layer) security and JDBC user provisioning.
-
-### Web - spring-security-web.jar
-Contains filters and related web-security infrastructure code. Anything with a servlet API dependency. You’ll need it if you require Spring Security web authentication services and URL-based access-control.
-
-### Config - spring-security-config.jar
-Contains the security namespace parsing code & Java configuration code. You need it if you are using the Spring Security XML namespace for configuration or Spring Security’s Java Configuration support. None of the classes are intended for direct use in an application.
-
-### LDAP - spring-security-ldap.jar
-LDAP authentication and provisioning code. Required if you need to use LDAP authentication or manage LDAP user entries.
-
-### OAuth 2.0 Core - spring-security-oauth2-core.jar
-spring-security-oauth2-core.jar contains core classes and interfaces that provide support for the OAuth 2.0 Authorization Framework and for OpenID Connect Core 1.0. It is required by applications that use OAuth 2.0 or OpenID Connect Core 1.0, such as Client, Resource Server, and Authorization Server.
-
-### OAuth 2.0 Client - spring-security-oauth2-client.jar
-spring-security-oauth2-client.jar is Spring Security’s client support for OAuth 2.0 Authorization Framework and OpenID Connect Core 1.0. Required by applications leveraging OAuth 2.0 Login and/or OAuth Client support.
-
-### OAuth 2.0 JOSE - spring-security-oauth2-jose.jar
-spring-security-oauth2-jose.jar contains Spring Security’s support for the JOSE (Javascript Object Signing and Encryption) framework. The JOSE framework is intended to provide a method to securely transfer claims between parties. It is built from a collection of specifications:
-    • JSON Web Token (JWT)
-    • JSON Web Signature (JWS)
-    • JSON Web Encryption (JWE)
-    • JSON Web Key (JWK)
-      
-### OpenID - spring-security-openid.jar
-OpenID web authentication support. Used to authenticate users against an external OpenID server. Requires OpenID4Java.
 
 ## Configuration
 
