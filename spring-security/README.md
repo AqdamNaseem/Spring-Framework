@@ -37,11 +37,11 @@ AbstractSecurityInterceptor perform below steps once it is invoked by Spring, pa
 
 The AccessDecisionManager is called by the AbstractSecurityInterceptor and is responsible for making final access control decisions. the AccessDecisionManager interface contains three methods
 
-void decide(Authentication authentication, Object secureObject, Collection<ConfigAttribute> attrs) throws AccessDeniedException;
+    void decide(Authentication authentication, Object secureObject, Collection<ConfigAttribute> attrs) throws AccessDeniedException;
 
-boolean supports(ConfigAttribute attribute);
+    boolean supports(ConfigAttribute attribute);
 
-boolean supports(Class clazz);
+    boolean supports(Class clazz);
 
 The AccessDecisionManager's decide method is passed all the relevant information it needs in order to make an authorization decision. In particular, passing the secure Object enables those arguments contained in the actual secure object invocation to be inspected. For example, let’s assume the secure object was a MethodInvocation. It would be easy to query the MethodInvocation for any Customer argument, and then implement some sort of security logic in the AccessDecisionManager to ensure the principal is permitted to operate on that customer. Implementations are expected to throw an AccessDeniedException if access is denied.
 
@@ -55,11 +55,11 @@ Using this approach, a series of AccessDecisionVoter implementations are polled 
 
 The AccessDecisionVoter interface has three methods:
 
-int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attrs);
+    int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attrs);
 
-boolean supports(ConfigAttribute attribute);
+    boolean supports(ConfigAttribute attribute);
 
-boolean supports(Class clazz);
+    boolean supports(Class clazz);
 
 Concrete implementations return an int, with possible values being reflected in the AccessDecisionVoter static fields ACCESS_ABSTAIN, ACCESS_DENIED and ACCESS_GRANTED. A voting implementation will return ACCESS_ABSTAIN if it has no opinion on an authorization decision. If it does have an opinion, it must return either ACCESS_DENIED or ACCESS_GRANTED.
 
